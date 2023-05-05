@@ -119,7 +119,7 @@ func (l *RedisLock) TryLock(ctx context.Context, expiration time.Duration) error
 
 func (l *RedisLock) UnLock(ctx context.Context) error {
 	defer func() {
-		l.unlockCh <- struct{}{}
+		close(l.unlockCh)
 	}()
 	res, err := l.client.Eval(ctx, luaUnlock, []string{l.key}, l.value).Int64()
 	if err != nil {
